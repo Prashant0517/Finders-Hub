@@ -1,0 +1,21 @@
+/* Navbar Background */
+.custom-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Brand */
+.navbar-brand {
+    color: #000;
+    font-weight: 600;
+}
+
+/* Links */
+.nav-link {
+    color: #000;
+    margin-right: 15px;
+}
+
+.nav-link:hover {
+    color: #000;
+}

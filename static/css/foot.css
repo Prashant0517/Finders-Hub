@@ -1,0 +1,15 @@
+.footer-custom {
+    background-color: #1a1a1a;   /* lighter than pure black */
+    color: #ccc;
+    font-size: 14px;
+    margin-top: 40px;
+}
+
+.footer-custom p {
+    color: #aaa;
+    margin: 0;
+}
+
+.footer-custom h6 {
+    font-weight: 500;
+}
