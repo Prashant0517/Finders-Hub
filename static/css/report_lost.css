@@ -1,0 +1,28 @@
+body {
+    background-color: #f4f7fb;
+}
+
+/* Form Card */
+.form-card {
+    background: gray;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Inputs */
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Button */
+.btn-dark {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-light {
+    border-radius: 8px;
+}
