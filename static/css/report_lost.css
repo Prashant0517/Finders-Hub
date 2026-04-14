@@ -1,28 +1,23 @@
-body {
-    background-color: #f4f7fb;
-}
-
-/* Form Card */
+/* Form container background */
 .form-card {
-    background: gray;
+    background-color:  #f9fafb;   /* change this to any color you want */
     padding: 25px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 10px;
 }
 
-/* Inputs */
-.form-control, .form-select {
-    border-radius: 8px;
-    padding: 10px;
+/* Input field background */
+.form-control,
+.form-select {
+    background-color: #f9fafb;   /* light gray input background */
 }
 
-/* Button */
-.btn-dark {
-    border-radius: 8px;
-    font-weight: 500;
+/* Placeholder color */
+.form-control::placeholder {
+    color: #9ca3af;   /* light gray text */
+    opacity: 1;       /* ensures full visibility */
 }
 
-.btn-light {
-    border-radius: 8px;
+/* For textarea placeholder also */
+textarea::placeholder {
+    color: #9ca3af;
 }
