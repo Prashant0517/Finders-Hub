@@ -1,0 +1,67 @@
+/* Reset */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,
+body{
+    height:100%;
+}
+
+/* Page Layout */
+
+body{
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background:#f8f9fa;
+}
+
+/* Center Content */
+
+.login-page{
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+}
+
+/* Login Card */
+
+.login-card{
+    background:#ffffff;
+    padding:35px;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,.1);
+}
+
+/* Heading */
+
+.login-card h2{
+    font-weight:700;
+}
+
+/* Inputs */
+
+.form-control{
+    height:50px;
+    border-radius:8px;
+}
+
+/* Button */
+
+.btn{
+    height:48px;
+    border-radius:8px;
+    font-size:17px;
+}
+
+/* Footer */
+
+footer{
+    margin-top:auto;
+}
