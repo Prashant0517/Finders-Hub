@@ -27,7 +27,7 @@ def formsave():
         c = con.cursor()
         c.execute("insert into student(fullname,mail,pass,contact)values(?,?,?,?)",(fn,em,ps,cn))
         con.commit()
-        return render_template('dashboard.html')
+        return render_template('index.html')
     else:
         return "registration fail"
 
