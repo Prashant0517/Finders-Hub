@@ -12,13 +12,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/foot.css') }}">
 </head>
 <body>
-    {% include "nav.html" %}
     <main class="register-page">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5">
                     <h2 class="text-center mb-4">Create Account</h2>
-                    <form action="/formsave" method="post">
+                    <form action="formsave" method="post">
                         <input class="form-control mb-3" type="text" placeholder="Enter your full name" name="fullname">
                         <input class="form-control mb-3" type="email" placeholder="Enter mail id" name="mail">
                         <input class="form-control mb-3" type="password" placeholder="Enter password" name="pass">

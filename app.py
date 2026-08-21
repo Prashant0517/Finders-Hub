@@ -1,3 +1,4 @@
+import sqlite3
 import sqlite3 as sq
 
 from flask import *
@@ -13,6 +14,22 @@ def dashboard():
 @app.route('/register')
 def register():
     return render_template("register.html")
+
+@app.route("/formsave",methods=["POST","GET"])
+def formsave():
+    if request.method =="POST":
+        fn= request.form["fullname"]
+        em = request.form["mail"]
+        ps = request.form["pass"]
+        cn = request.form["contact"]
+        ad = request.form["address"]
+        con = sqlite3.connect("mywebsite.db")
+        c = con.cursor()
+        c.execute("insert into student(fullname,mail,pass,contact)values(?,?,?,?)",(fn,em,ps,cn))
+        con.commit()
+        return render_template('dashboard.html')
+    else:
+        return "registration fail"
 
 @app.route('/login')
 def login():
