@@ -38,18 +38,36 @@ def login():
 
 @app.route("/logincheck",methods=["post"])
 def checkmail():
-    if request.method == "POST":
-        em=request.form["mail"]
-        ps=request.form["pass"]
-        con = sqlite3.connect("mywebsite.db")
-        c = con.cursor()
-        c.execute("select * from student where mail=? and pass=?", (em,ps))
-        data = c.fetchall()
-        if len(data) == 1:
-            session["user"] = em
-            return redirect(url_for("dashboard"))
-        else:
-            return redirect(url_for("login"))
+    em = request.form["mail"]
+    ps = request.form["pass"]
+    con = sqlite3.connect("mywebsite.db")
+    con.row_factory = sqlite3.Row
+    c = con.cursor()
+    c.execute(
+        "SELECT * FROM student WHERE mail=? AND pass=?",
+        (em, ps)
+    )
+    data = c.fetchone()
+    con.close()
+    if data:
+        session["user"] = data["mail"]
+        session["role"] = data["role"]
+        return redirect(url_for("dashboard"))
+    else:
+        return redirect(url_for("login"))
+    # if request.method == "POST":
+    #     em=request.form["mail"]
+    #     ps=request.form["pass"]
+    #     con = sqlite3.connect("mywebsite.db")
+    #     c = con.cursor()
+    #     c.execute("select * from student where mail=? and pass=?", (em,ps))
+    #     data = c.fetchall()
+    #     if len(data)==1:
+    #         session["user"] = em
+    #         # session["role"] = data['role']
+    #         return redirect(url_for("dashboard"))
+    #     else:
+    #         return redirect(url_for("login"))
 
 @app.route("/dashboard")
 def dashboard():
@@ -63,9 +81,9 @@ def logout():
     session.pop("user",None)  # session ends
     return redirect(url_for("login"))
 
-@app.route('/browse_item')
-def browse_item():
-    return render_template("browse_item.html")
+# @app.route('/browse_item')
+# def browse_item():
+#     return render_template("browse_item.html")
 
 @app.route('/report_lost')
 def report_lost():
@@ -73,6 +91,7 @@ def report_lost():
 
 @app.route("/lostrepost", methods=["POST"])
 def lost_post():
+    user_id = session.get("user")
     item_name = request.form["item_name"]
     description = request.form["description"]
     category = request.form["category"]
@@ -85,10 +104,11 @@ def lost_post():
 
     c.execute("""
         INSERT INTO posts
-        (post_type, item_name, description, category,
+        (user_id,post_type, item_name, description, category,
          location, date, contact)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (? ,?, ?, ?, ?, ?, ?, ?)
     """, (
+        user_id,
         "lost",
         item_name,
         description,
@@ -107,6 +127,7 @@ def report_found():
 
 @app.route("/foundrepost", methods=["POST"])
 def found_post():
+    user_id = session.get("user")
     item_name = request.form["item_name"]
     description = request.form["description"]
     category = request.form["category"]
@@ -118,10 +139,11 @@ def found_post():
     c = con.cursor()
     c.execute("""
         INSERT INTO posts
-        (post_type, item_name, description, category,
+        (user_id,post_type, item_name, description, category,
          location, date, contact)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?,?, ?, ?, ?, ?, ?, ?)
     """, (
+        user_id,
         "found",
         item_name,
         description,
@@ -133,6 +155,61 @@ def found_post():
     con.commit()
     con.close()
     return render_template("report_found.html")
+
+@app.route('/browse_item')
+def browse_item():
+    conn = sqlite3.connect('mywebsite.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("""
+            SELECT *
+            FROM posts
+            ORDER BY id DESC
+        """)
+    records = cursor.fetchall()
+    conn.close()
+    return render_template("browse_item.html", records=records,is_admin=(session.get("role") == "admin"))
+    # conn = sqlite3.connect('mywebsite.db')
+    # conn.row_factory = sqlite3.Row
+    # cursor = conn.cursor()
+    #
+    # cursor.execute("""
+    #     SELECT *
+    #     FROM posts
+    #     ORDER BY id DESC
+    # """)
+    #
+    # records = cursor.fetchall()
+    # conn.close()
+    # return render_template("browse_item.html",records=records)
+
+@app.route('/update_status/<int:post_id>', methods=['POST'])
+def update_status(post_id):
+    # Check if user is logged in
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    # Only admin can update status
+    if session.get('role') != 'admin':
+        return "Access Denied", 403
+    # Get new status from form
+    new_status = request.form['status']
+     # Allowed status values
+    allowed_statuses = ['Pending', 'Resolved', 'Claimed']
+    if new_status not in allowed_statuses:
+        return "Invalid status", 400
+    # Update database
+    conn = sqlite3.connect('mywebsite.db')
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE posts
+        SET status = ?
+        WHERE id = ?
+    """, (new_status, post_id))
+    conn.commit()
+    conn.close()
+
+    # Go back to Browse page
+    return redirect(url_for('browse_item'))
 
 if __name__== "__main__" :
     app.run(debug=True , port="1234")
