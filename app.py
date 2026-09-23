@@ -49,11 +49,13 @@ def checkmail():
     )
     data = c.fetchone()
     con.close()
+    # flash("Invalid Login Data", "success")
     if data:
         session["user"] = data["mail"]
         session["role"] = data["role"]
         return redirect(url_for("dashboard"))
     else:
+        flash("Invalid credentials! Please check your email and password.", "danger")
         return redirect(url_for("login"))
     # if request.method == "POST":
     #     em=request.form["mail"]
@@ -119,7 +121,8 @@ def lost_post():
     ))
     con.commit()
     con.close()
-    return render_template("report_lost.html")
+    flash("Lost report submitted successfully!", "success")
+    return redirect(url_for("browse_item"))
 
 @app.route("/report_found")
 def report_found():
@@ -154,7 +157,8 @@ def found_post():
     ))
     con.commit()
     con.close()
-    return render_template("report_found.html")
+    flash("Found report submitted successfully!", "success")
+    return redirect(url_for("browse_item"))
 
 @app.route('/browse_item')
 def browse_item():
@@ -205,6 +209,31 @@ def update_status(post_id):
         SET status = ?
         WHERE id = ?
     """, (new_status, post_id))
+    conn.commit()
+    conn.close()
+
+    # Go back to Browse page
+    return redirect(url_for('browse_item'))
+
+@app.route('/delete_post/<int:post_id>', methods=['POST'])
+def delete_post(post_id):
+    # Check if user is logged in
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    # Only admin can delete
+    if session.get('role') != 'admin':
+        return "Access Denied", 403
+
+    # Delete the record
+    conn = sqlite3.connect('mywebsite.db')
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM posts
+        WHERE id = ?
+    """, (post_id,))
+
     conn.commit()
     conn.close()
 
